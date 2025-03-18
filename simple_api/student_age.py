@@ -1,12 +1,12 @@
 #!flask/bin/python
 from flask import Flask, jsonify
 from flask import abort
-from flask import make_response
-from flask import request
-from flask import url_for
-from flask_httpauth import HTTPBasicAuth
+from flask import make_response # type: ignore
+from flask import request # type: ignore
+from flask import url_for # type: ignore
+from flask_httpauth import HTTPBasicAuth # type: ignore
 from flask import g, session, redirect, url_for
-from flask_simpleldap import LDAP
+from flask_simpleldap import LDAP # type: ignore
 import json
 import os
 
