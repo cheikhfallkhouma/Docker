@@ -1,62 +1,34 @@
-# version: "3.8"
-
-# services:
-#   api:
-#     image: student-api  # Nom de l'image API construite précédemment
-#     container_name: student-api-container
-#     volumes:
-#       - ./student_age.json:/data/student_age.json
-#     ports:
-#       - "5001:5000"
-#     networks:
-#       - pozos-network
-
-#   web:
-#     image: php:apache
-#     container_name: pozos-web
-#     depends_on:
-#       - api
-#     environment:
-#       - API_USERNAME=toto
-#       - API_PASSWORD=python
-#     volumes:
-#       - ./website:/var/www/html  # Montage du site web fourni
-#     ports:
-#       - "8080:80"
-#     networks:
-#       - pozos-network
-
-# networks:
-#   pozos-network:
-#     driver: bridge
-
+# 1️⃣ Version du fichier Docker Compose
 version: '3'
 
 services:
+  # 2️⃣ Service 'web' pour héberger l'application PHP avec Apache
   web: 
-    image: php:apache
+    image: php:apache  #Image Docker officielle de PHP avec Apache pour servir le site web
     depends_on:
-      - api
+      - api  #Le service 'web' dépend du service 'api', donc 'web' attend que 'api' soit démarré
     ports:
-      - "8082:80"
+      - "8082:80" # Redirection du port 80 du conteneur (Apache) vers le port 8082 de l'hôte
     volumes:
-      - ./website:/var/www/html  # Montage du site web fourni
+      - ./website:/var/www/html  # Montage du répertoire local ./website dans /var/www/html du conteneur pour que Apache puisse servir le site
     environment:
-      - USERNAME=toto
-      - PASSWORD=python
+      - USERNAME=toto # Variable d'environnement USERNAME utilisée pour l'authentification API
+      - PASSWORD=python # Variable d'environnement PASSWORD utilisée pour l'authentification API
     networks:
-      - pozos-network
+      - pozos-network # Le service 'web' est connecté au réseau 'pozos-network'
 
+ # 3️⃣ Service 'api' pour héberger l'API Flask
   api:
-    image: api-pozos:v1
+    image: api-pozos:v1 # Image Docker personnalisée pour l'API Flask
     ports:
-      - "4000:5000"
+      - "4000:5000" # Redirection du port 5000 du conteneur (port de l'API) vers le port 4000 de l'hôte
     volumes: 
-      - ./simple_api/student_age.json:/data/student_age.json
+      - ./simple_api/student_age.json:/data/student_age.json # Montage du fichier student_age.json local dans le conteneur à /data/student_age.json
     networks:
-      - pozos-network
+      - pozos-network # Le service 'api' est connecté au réseau 'pozos-network'
 
+# 4️⃣ Réseau interne pour la communication entre les services
 networks:
-  pozos-network:
-    driver: bridge
+  pozos-network: # Création du réseau interne 'pozos-network'
+    driver: bridge # Le driver 'bridge' est utilisé pour permettre la communication entre les conteneurs
 
