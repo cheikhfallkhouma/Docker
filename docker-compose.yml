@@ -1,0 +1,62 @@
+# version: "3.8"
+
+# services:
+#   api:
+#     image: student-api  # Nom de l'image API construite précédemment
+#     container_name: student-api-container
+#     volumes:
+#       - ./student_age.json:/data/student_age.json
+#     ports:
+#       - "5001:5000"
+#     networks:
+#       - pozos-network
+
+#   web:
+#     image: php:apache
+#     container_name: pozos-web
+#     depends_on:
+#       - api
+#     environment:
+#       - API_USERNAME=toto
+#       - API_PASSWORD=python
+#     volumes:
+#       - ./website:/var/www/html  # Montage du site web fourni
+#     ports:
+#       - "8080:80"
+#     networks:
+#       - pozos-network
+
+# networks:
+#   pozos-network:
+#     driver: bridge
+
+version: '3'
+
+services:
+  web: 
+    image: php:apache
+    depends_on:
+      - api
+    ports:
+      - "8082:80"
+    volumes:
+      - ./website:/var/www/html  # Montage du site web fourni
+    environment:
+      - USERNAME=toto
+      - PASSWORD=python
+    networks:
+      - pozos-network
+
+  api:
+    image: api-pozos:v1
+    ports:
+      - "4000:5000"
+    volumes: 
+      - ./simple_api/student_age.json:/data/student_age.json
+    networks:
+      - pozos-network
+
+networks:
+  pozos-network:
+    driver: bridge
+
